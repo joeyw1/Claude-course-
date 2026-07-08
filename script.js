@@ -110,9 +110,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return { isValid, firstInvalid };
   }
 
-  form.addEventListener('submit', (e) => {
+  const FORMSUBMIT_ENDPOINT = 'https://formsubmit.co/ajax/angch@tertiaryinfotech.com';
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     successBanner.hidden = true;
+    successBanner.classList.remove('form-error');
 
     const { isValid, firstInvalid } = validate();
 
@@ -130,17 +134,32 @@ document.addEventListener('DOMContentLoaded', () => {
       submittedAt: new Date().toISOString(),
     };
 
-    // TODO: Replace with a real API call once a backend is available, e.g.:
-    // fetch('/api/appointments', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(formData),
-    // });
-    console.log('New appointment request:', formData);
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending...';
 
-    successBanner.hidden = false;
-    form.reset();
-    Object.keys(fields).forEach((key) => setError(key, ''));
+    try {
+      const response = await fetch(FORMSUBMIT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error(`FormSubmit responded with ${response.status}`);
+
+      console.log('New appointment request sent:', formData);
+      successBanner.textContent = "✅ Thank you! We'll contact you shortly.";
+      successBanner.hidden = false;
+      form.reset();
+      Object.keys(fields).forEach((key) => setError(key, ''));
+    } catch (error) {
+      console.error('Appointment request failed to send:', error);
+      successBanner.textContent = '⚠️ Something went wrong sending your request. Please call us directly or try again.';
+      successBanner.classList.add('form-error');
+      successBanner.hidden = false;
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = 'Submit Request';
+    }
   });
 
   /* ---------- Footer year ---------- */
