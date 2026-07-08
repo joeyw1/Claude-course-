@@ -162,6 +162,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  /* ---------- WhatsApp chat widget ---------- */
+  const waToggle = document.getElementById('waToggle');
+  const waPanel = document.getElementById('waPanel');
+  const waClose = document.getElementById('waClose');
+  const waWidget = document.getElementById('waWidget');
+
+  function setWaPanelOpen(isOpen) {
+    waPanel.hidden = !isOpen;
+    waToggle.setAttribute('aria-expanded', String(isOpen));
+  }
+
+  waToggle.addEventListener('click', () => {
+    setWaPanelOpen(waPanel.hidden);
+  });
+
+  waClose.addEventListener('click', () => setWaPanelOpen(false));
+
+  document.addEventListener('click', (e) => {
+    if (!waPanel.hidden && !waWidget.contains(e.target)) {
+      setWaPanelOpen(false);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !waPanel.hidden) {
+      setWaPanelOpen(false);
+      waToggle.focus();
+    }
+  });
+
   /* ---------- Footer year ---------- */
   document.getElementById('year').textContent = new Date().getFullYear();
 });
