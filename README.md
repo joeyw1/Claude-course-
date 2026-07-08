@@ -4,6 +4,8 @@ A responsive one-page marketing site for a healthcare clinic, built with plain H
 
 **Live site:** https://joeyw1.github.io/Claude-course-/
 
+![Wellview Family Clinic screenshot](assets/screenshot.png)
+
 ## Features
 
 - Sticky navbar with smooth-scroll links and a mobile hamburger menu
